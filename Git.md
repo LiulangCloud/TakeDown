@@ -11,6 +11,22 @@
 
 
 
+Git常用命令
+
+```tex
+1 git init #初始化，创建主分支
+2 git clone 地址 #克隆远程仓库
+3 git clone -b 分支名 地址 #克隆分支代码到本地
+4 git status #查看状态
+5 git add 文件名 #将某个文件提交到暂存区
+6 git add . #将所有文件提交到暂存区
+7 git commit -m "提交的备注信息" #提交仓库
+8 git push #将提交文件全部推送到gitHub
+9 git rm 文件名 #将文件从commit后撤回到add后
+```
+
+
+
 问题：Please make sure you have the correct access rights and the repository exists.(ssh通信失败)
 
 解决方法：重置SSH密钥
