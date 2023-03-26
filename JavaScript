@@ -1,0 +1,66 @@
+[TOC]
+
+### 1. CORS 跨域资源共享
+
+CORS （Cross-Origin Resource Sharing，跨域资源共享）由一系列 HTTP 响应头组成，**这些** **HTTP** **响应头决定浏览器是否阻止前端** **JS** **代码跨域获取资源**。
+
+浏览器的同源安全策略默认会阻止网页“跨域”获取资源。但如果接口服务器配置了 CORS 相关的 HTTP 响应头，就可以解除浏览器端的跨域访问限制
+
+<img src="D:\TakeDown\src\image\cors1.png" />
+
+![](D:\TakeDown\src\image\cors2.png)
+
+#### 1.1 CORS **响应头部** ( Access-Control-Allow-Origin )
+
+```nginx
+1 ## 响应头部中可以携带一个 Access-Control-Allow-Origin 字段
+2 Access-Control-Allow-Origin: <origin> | *
+3 ## origin 参数的值指定了允许访问该资源的外域 URL。
+4 res.setHeader('Access-Control-Allow-Origin','http://liulang.cn')
+5 ## 字段的值为通配符 *，表示允许来自任何域的请求。
+6 res.setHeader('Access-Control-Allow-Origin','*')
+```
+
+#### 1.2 CORS **响应头部** - Access-Control-Allow-Headers
+
+默认情况下，CORS **仅**支持客户端向服务器发送如下的 9 个请求头：
+
+``Accept``、``Accept-Language``、``Content-Language``、``DPR``、``Downlink``、``Save-Data``、``Viewport-Width``、``Width`` 、``Content-Type`` （值仅限于 text/plain、multipart/form-data、application/x-www-form-urlencoded 三者之一）
+
+如果客户端向服务器发送了额外的请求头信息，则需要在服务器端，通过 Access-Control-Allow-Headers 对额外的请求头进行声明，否则这次请求会失败！
+
+```js
+1 // 允许客户端额外向服务器发送 Content-Type 请求头和 X-Custom-Header 请求头
+2 //注意：多个请求头之间使用英文的都好进行分割
+3 res.setHeader('Access-Control-Allow-Headers','Content-Type, X-Custom-Header')
+```
+
+#### 1.3 CORS 响应头部 - Access-Control-Allow-Methods
+
+默认情况下，CORS 仅支持客户端发起 GET、POST、HEAD 请求。
+
+如果客户端希望通过 PUT、DELETE 等方式请求服务器的资源，则需要在服务器端，通过 Access-Control-Alow-Methods来指明实际请求所允许使用的 HTTP 方法。
+
+```js
+1 //只允许 POST、GET、DELETE、HEAD 请求方法
+2 res.setHeader('Access-Control-Allow-Methods','POST, GET, DELETE, HEAD')
+3 //允许所有的 HTTP 请求方法
+4 res.setHeader('Access-Control-Allow-Methods','*')
+```
+
+
+
+### 2. JSONP
+
+浏览器端通过 <script> 标签的 src 属性，请求服务器上的数据，同时，服务器返回一个函数的调用。这种请求数据的方式叫做 JSONP。
+
+#### 2.1特点
+
+①JSONP 不属于真正的 Ajax 请求，因为它没有使用 XMLHttpRequest 这个对象。
+
+②JSONP 仅支持 GET 请求，不支持 POST、PUT、DELETE 等请求。
+
+#### 2.2注意
+
+如果项目中已经配置了 CORS 跨域资源共享，为了**防止冲突**，必须在配置 CORS 中间件之前声明 JSONP 的接口。否则 JSONP 接口会被处理成开启了 CORS 的接口。
+
